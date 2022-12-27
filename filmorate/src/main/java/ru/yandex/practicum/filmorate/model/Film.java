@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -11,6 +12,7 @@ public class Film {
     @NonNull
     private int id;
     @NonNull
+    @NotBlank
     private String name;
     @NonNull
     private String description;
