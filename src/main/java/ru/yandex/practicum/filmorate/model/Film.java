@@ -9,15 +9,13 @@ import java.time.LocalDate;
 @Data
 public class Film {
 
-    @NonNull
     private int id;
     @NonNull
     @NotBlank
-    private String name;
+    private final String name;
+    private final String description;
     @NonNull
-    private String description;
+    private final  LocalDate releaseDate;
     @NonNull
-    private LocalDate releaseDate;
-    @NonNull
-    private long duration;
+    private final long duration;
 }
