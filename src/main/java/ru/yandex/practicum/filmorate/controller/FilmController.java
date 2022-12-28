@@ -38,13 +38,12 @@ public class FilmController {
     @PutMapping
     public Film put(@Valid @RequestBody Film film) {
         validate(film);
-        if (!films.containsKey(film.getId())) {
-            throw new ValidationException("Такого фильма нет.");
-        }
-            films.remove(film.getId());
-            checkFilm(film);
-            films.put(film.getId(),film);
-            log.info("Информация о фильме {} обновлена", film.getName());
+        if (!films.containsKey(film.getId()))
+            throw new ValidationException("Такого фильма нет");
+        films.remove(film.getId());
+        checkFilm(film);
+        films.put(film.getId(), film);
+        log.info("Информация о фильме {} обновлена", film.getName());
         return film;
     }
 

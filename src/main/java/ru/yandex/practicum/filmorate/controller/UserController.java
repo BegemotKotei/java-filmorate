@@ -36,26 +36,22 @@ public class UserController {
     @PutMapping
     public User put(@Valid @RequestBody User user) {
         validate(user);
-        if (!users.containsKey(user.getId())) {
-            throw new ValidationException("Пользователь не зарегистрирован.");
-        }
-            users.remove(user.getId());
-            checkUsers(user);
-            users.put(user.getId(), user);
-            log.info("Информация о пользователе {} обновлена", user.getLogin());
+        if (!users.containsKey(user.getId()))
+            throw new ValidationException("Пользователя не существует, необходима регистрация нового пользователя");
+        users.remove(user.getId());
+        checkUsers(user);
+        users.put(user.getId(), user);
+        log.info("Информация о пользователе {} обновлена", user.getLogin());
         return user;
     }
 
     private void validate(@Valid @RequestBody User user) {
         if (user.getLogin().contains(" ")) {
-            throw new ValidationException("логин не может быть пустым, содержать пробелы.");
+            throw new ValidationException("Логин не может быть пустым или содержать пробелы");
         }
-        if(user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if(user.getBirthDay().isAfter(LocalDate.now())) {
+        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
+        if (user.getBirthday().isAfter(LocalDate.now()))
             throw new ValidationException("Marty McFly не балуйся=)");
-        }
     }
 
     private void checkUsers(@RequestBody User user) {
