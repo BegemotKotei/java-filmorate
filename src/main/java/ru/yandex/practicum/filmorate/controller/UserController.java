@@ -27,7 +27,8 @@ public class UserController {
     public User create(@Valid @RequestBody User user) {
         validate(user);
         checkUsers(user);
-        users.put(userId++, user);
+        user.setId(userId++);
+        users.put(user.getId(), user);
         log.info("Добавлен пользователь с логином {}", user.getLogin());
         return user;
     }
@@ -37,20 +38,19 @@ public class UserController {
         validate(user);
         if (!users.containsKey(user.getId())) {
             throw new ValidationException("Пользователь не зарегистрирован.");
-        } else {
+        }
             users.remove(user.getId());
             checkUsers(user);
             users.put(user.getId(), user);
             log.info("Информация о пользователе {} обновлена", user.getLogin());
-        }
         return user;
     }
 
     private void validate(@Valid @RequestBody User user) {
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(" ")) {
             throw new ValidationException("логин не может быть пустым, содержать пробелы.");
         }
-        if(user.getName().isBlank()) {
+        if(user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if(user.getBirthDay().isAfter(LocalDate.now())) {
@@ -60,9 +60,9 @@ public class UserController {
 
     private void checkUsers(@RequestBody User user) {
         Collection<User> userCollection = users.values();
-        for (User us : userCollection) {
-            if (user.getLogin().equals(us.getLogin()) || user.getEmail().equals(us.getEmail())) {
-                throw new ValidationException("Пользователь с таким email и login уже зарегистрирован.");
+        for (User u : userCollection) {
+            if (user.getLogin().equals(u.getLogin()) || user.getEmail().equals(u.getEmail())) {
+                throw new ValidationException("Пользователь с таким email или login уже зарегистрирован.");
             }
         }
     }

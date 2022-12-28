@@ -40,12 +40,11 @@ public class FilmController {
         validate(film);
         if (!films.containsKey(film.getId())) {
             throw new ValidationException("Такого фильма нет.");
-        } else {
+        }
             films.remove(film.getId());
             checkFilm(film);
             films.put(film.getId(),film);
             log.info("Информация о фильме {} обновлена", film.getName());
-        }
         return film;
     }
 
@@ -58,8 +57,8 @@ public class FilmController {
 
     private void checkFilm(@RequestBody Film film) {
         Collection<Film> filmCollection = films.values();
-        for (Film fl : filmCollection) {
-            if (film.getName().equals(fl.getName()) && film.getReleaseDate().equals(fl.getReleaseDate()))
+        for (Film f : filmCollection) {
+            if (film.getName().equals(f.getName()) && film.getReleaseDate().equals(f.getReleaseDate()))
                 throw new ValidationException("Такой фильм уже есть");
         }
     }
