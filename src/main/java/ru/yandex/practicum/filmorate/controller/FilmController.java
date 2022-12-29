@@ -16,9 +16,9 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
-    private static final LocalDate DATE = LocalDate.of(1895,12,28);
+    private static final LocalDate DATE = LocalDate.of(1895, 12, 28);
     private int filmId = 1;
-    private final Map<Integer, Film> films = new HashMap<>();
+    protected final Map<Integer, Film> films = new HashMap<>();
 
     @GetMapping
     public Collection<Film> findAll() {
@@ -28,7 +28,6 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         validate(film);
-        checkFilm(film);
         film.setId(filmId++);
         films.put(film.getId(), film);
         log.info("Фильм {} добавлен в коллекцию", film.getName());
@@ -41,24 +40,23 @@ public class FilmController {
         if (!films.containsKey(film.getId()))
             throw new ValidationException("Такого фильма нет");
         films.remove(film.getId());
-        checkFilm(film);
         films.put(film.getId(), film);
         log.info("Информация о фильме {} обновлена", film.getName());
         return film;
     }
 
-    private void validate(@Valid @RequestBody Film film) {
-        if (film.getReleaseDate().isBefore(DATE) || film.getDuration() < 0)
-            throw new ValidationException("В то время кино еще не было или продолжительность неверная");
-        if (film.getDescription().length() > 200)
-            throw new ValidationException("Слишком длинное описание");
-    }
-
-    private void checkFilm(@RequestBody Film film) {
+    protected void validate(@Valid @RequestBody Film film) {
+        if (film.getReleaseDate().isBefore(DATE) || film.getDuration() < 0) {
+            log.warn("film.getReleaseDate film release date: '{}'\n film.getDuration film duration: {}",
+                    film.getReleaseDate(), film.getDuration());
+            throw new ValidationException("Не верная дата или продолжительность фильма.");
+        }
         Collection<Film> filmCollection = films.values();
-        for (Film f : filmCollection) {
-            if (film.getName().equals(f.getName()) && film.getReleaseDate().equals(f.getReleaseDate()))
-                throw new ValidationException("Такой фильм уже есть");
+        for (Film fl : filmCollection) {
+            if (film.getName().equals(fl.getName()) && film.getReleaseDate().equals(fl.getReleaseDate())) {
+                log.warn("film film: '{}'\n fl film: {}", film, fl);
+                throw new ValidationException("Такой фильм уже есть.");
+            }
         }
     }
 }
