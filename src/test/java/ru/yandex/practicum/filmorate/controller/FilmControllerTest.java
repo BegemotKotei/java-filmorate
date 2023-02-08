@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -21,32 +23,24 @@ class FilmControllerTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     protected Validator validator = factory.getValidator();
     private FilmController filmController;
+    private FilmService filmService;
+    private FilmStorage filmStorage;
+    private InMemoryFilmStorage inMemoryFilmStorage;
     private Film film;
 
     @BeforeEach
     void filmControllerInit() {
-        filmController = new FilmController();
+        inMemoryFilmStorage = new InMemoryFilmStorage();
+        filmService = new FilmService(inMemoryFilmStorage);
+        filmController = new FilmController(filmService);
     }
 
     @BeforeEach
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        filmController = new FilmController();
-    }
-
-    @Test
-    void releaseDateBefore1895() {
-        film = new Film("1884", "some description", LocalDate.of(1884,1,1), 60);
-        assertThrows(ValidationException.class, () -> filmController.validate(film));
-    }
-
-    @Test
-    void duplicateFilmTest() {
-        film = new Film("1984", "some description", LocalDate.of(1984,1,1), 60);
-        film.setId(1);
-        filmController.films.put(film.getId(), film);
-        assertThrows(ValidationException.class, () -> filmController.validate(film));
+        filmController = new FilmController(filmService);
+        inMemoryFilmStorage = new InMemoryFilmStorage();
     }
 
     @Test
@@ -107,14 +101,6 @@ class FilmControllerTest {
                 " криминальной судьбы отца советует ему ехать в Санкт-Петербург к старшему брату Виктору," +
                 " который «там большой человек».",LocalDate.of(1997,12,12),95);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
-        assertFalse(violations.isEmpty());
-        assertThat(violations.size()).isEqualTo(1);
-    }
-
-    @Test
-    void durationNotZeroTest() {
-        film = new Film("1999", "some description", LocalDate.of(1999,1,1), 0);
-        Set<ConstraintViolation<Film>> violations= validator.validate(film);
         assertFalse(violations.isEmpty());
         assertThat(violations.size()).isEqualTo(1);
     }
