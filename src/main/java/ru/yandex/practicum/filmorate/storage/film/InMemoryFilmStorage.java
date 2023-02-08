@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.InternalException;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.InternalException;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
@@ -14,13 +15,9 @@ import java.util.Map;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 
+    @Getter
     private final Map<Integer, Film> films = new HashMap<>();
     private int filmId = 1;
-
-    @Override
-    public Map<Integer, Film> getFilms() {
-        return films;
-    }
 
     @Override
     public Collection<Film> findAll() {
