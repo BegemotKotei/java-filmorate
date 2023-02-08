@@ -1,13 +1,16 @@
 package ru.yandex.practicum.filmorate;
 
-import org.springframework.boot.SpringApplication;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.net.http.HttpClient;
 
 @SpringBootTest
 class FilmorateApplicationTests {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FilmorateApplication.class, args);
+	@Test
+	void contextLoads() {
+		HttpClient httpClient = HttpClient.newBuilder().build();
 	}
+
 }

@@ -1,35 +1,41 @@
 package ru.yandex.practicum.filmorate.model;
 
-import javax.validation.constraints.*;
-
-import lombok.Data;
 import ru.yandex.practicum.filmorate.validate.BeginOfCinemaEra;
-
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder(toBuilder = true)
 public class Film {
-
-    private Set<Integer> usersLikes = new HashSet<>();
 
     @PositiveOrZero
     private int id;
-
-    @NotBlank(message = ".")
-    private final String name;
-
-    @NotBlank(message = ".")
-    @Size(max=200, message ="Должно быть не больше 200 символов!")
-    private final String description;
-
+    @NotBlank(message = "Не правильное название фильма.")
+    private String name;
+    @NotNull(message = "Отсутствует описание фильма.")
+    @Size(max = 200, message = "слишком длинное описание, больше 200 символов.")
+    private String description;
     @NotNull
     @BeginOfCinemaEra
-    private final LocalDate releaseDate;
-
-    @Min(value = 1, message = ".")
+    private LocalDate releaseDate;
+    @Min(value = 1, message = "Неправильная продолжительность фильма.")
     @Positive
-    private final long duration;
-
+    private long duration;
+    private Mpa mpa;
+    private List<Genre> genres;
 }
+
