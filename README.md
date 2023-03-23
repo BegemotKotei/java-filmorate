@@ -1,4 +1,6 @@
 # Java-filmorate
+Законченный проект можно увидеть в репозитории тимлида – [Алексей Курочкин](https://github.com/ku-alexej/java-filmorate#12-спринт-6-группа).
+***
 <a id="anchor"></a>
 [Ссылка на диаграмму БД проекта.](https://dbdiagram.io/d/63e0b47b296d97641d7eac70)
 ![Schema](https://user-images.githubusercontent.com/104847507/217567130-c147f802-8e91-41b2-8603-cf4199cf79a0.png)
